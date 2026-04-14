@@ -3,7 +3,7 @@
 - Es uno de los juegos más famosos de la historia de los videojuegos. Si no sabes jugar al buscaminas busca cualquier página web que te permita jugar y que te explique las normas del juego
 - Nombre de proyecto: BuscaMinas
   
-  ![estructuraproyecto.png](./estructuraproyecto.png)
+  ![img.png](./estructuraproyecto.png)
   
 - Separar la lógica de presentación de la lógica de negocio(dos capas). Ten encuenta que el código de Buscaminas.kt lo reutilizarás para hacer una versión gráfica de Buscaminas.
 - Main.kt contendrá main() y todas las funciones que consideres necesarias para la interacción con el usuario.
