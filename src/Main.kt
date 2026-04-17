@@ -1,4 +1,4 @@
 fun main() {
-    val interfaz = InterfazConsola()
+    val interfaz=InterfazConsola()
     interfaz.iniciar()
 }

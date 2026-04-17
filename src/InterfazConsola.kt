@@ -1,21 +1,20 @@
-class InterfazConsola {
-    fun iniciar() {
-        println("=== BUSCAMINAS ===")
-
+class InterfazConsola{
+    fun iniciar(){
+        println("~~~~~ BUSCAMINAS CONSOLA ~~~~~")
         do {
-            val juego = crearNuevaPartida()
-            ejecutarPartida(juego)
-        } while (preguntarReiniciar())
+            val juego=nuevaPartida()
+            jugar(juego)
+        } while (reiniciar())
 
-        println("¡Gracias por jugar!")
+        println("¡Gracias por jugar, vuelve pronto!")
     }
 
-    private fun crearNuevaPartida(): Buscaminas {
-        while (true) {
+    private fun nuevaPartida(): Buscaminas{
+        while (true){
             try {
-                val filas = solicitarEntero("Introduce el número de filas: ")
-                val columnas = solicitarEntero("Introduce el número de columnas: ")
-                val minas = solicitarEntero("Introduce el número de minas: ")
+                val filas = pedirNum("Número de filas: ")
+                val columnas = pedirNum("Número de columnas: ")
+                val minas = pedirNum("Número de minas: ")
 
                 return Buscaminas(filas, columnas, minas)
             } catch (e: IllegalArgumentException) {
@@ -24,63 +23,56 @@ class InterfazConsola {
         }
     }
 
-    private fun ejecutarPartida(juego: Buscaminas) {
-        while (juego.obtenerEstado() == EstadoJuego.EN_CURSO) {
+    private fun jugar(juego: Buscaminas){
+        while (juego.verEstado()==EstadoJuego.JUGANDO){
             imprimirTablero(juego)
-            mostrarMenu()
-            procesarAccion(juego)
+            menu()
+            accion(juego)
         }
 
         imprimirTablero(juego)
-        when (juego.obtenerEstado()) {
+        when (juego.verEstado()){
             EstadoJuego.GANADO -> println("¡Has ganado!")
-            EstadoJuego.PERDIDO -> println("Has perdido. ¡Había una mina!")
+            EstadoJuego.PERDIDO -> println("Has perdido. ¡Te comiste una mina!")
             else -> {}
         }
     }
 
-    private fun mostrarMenu() {
+    private fun menu() {
         println("1. Destapar celda")
-        println("2. Colocar/Quitar bandera")
+        println("2. Poner/Quitar bandera")
     }
 
-    private fun procesarAccion(juego: Buscaminas) {
-        when (solicitarEntero("Selecciona una opción: ")) {
+    private fun accion(juego: Buscaminas){
+        when (pedirNum("Escoge una opción: ")){
             1 -> {
-                val (f, c) = solicitarCoordenadas()
+                val (f,c) = pedirCoord()
                 juego.destapar(f, c)
             }
             2 -> {
-                val (f, c) = solicitarCoordenadas()
-                juego.alternarBandera(f, c)
+                val (f,c) = pedirCoord()
+                juego.cambiarBandera(f, c)
             }
-            else -> println("Opción no válida.")
+            else -> println("Opción inválida.")
         }
     }
 
-    private fun solicitarCoordenadas(): Pair<Int, Int> {
-        val fila = solicitarEntero("Fila: ")
-        val columna = solicitarEntero("Columna: ")
+    private fun pedirCoord(): Pair<Int, Int> {
+        val fila = pedirNum("Fila: ")
+        val columna = pedirNum("Columna: ")
         return Pair(fila, columna)
     }
 
-    private fun imprimirTablero(juego: Buscaminas) {
+    private fun imprimirTablero(juego: Buscaminas){
         println()
-        print("   ")
-        for (c in 0 until juego.columnas) {
-            print("$c ")
-        }
-        println()
-
-        for (f in 0 until juego.filas) {
-            print("$f: ")
-            for (c in 0 until juego.columnas) {
-                val celda = juego.obtenerVistaCelda(f, c)
+        for (f in 0 until juego.filas){
+            for (c in 0 until juego.columnas){
+                val celda = juego.verEstadoCelda(f, c)
                 val simbolo = when {
-                    celda.bandera -> "F"
+                    celda.bandera -> "B"
                     !celda.descubierta -> "@"
                     celda.mina -> "M"
-                    celda.minasAlrededor > 0 -> celda.minasAlrededor.toString()
+                    celda.minasCerca > 0 -> celda.minasCerca.toString()
                     else -> "0"
                 }
                 print("$simbolo ")
@@ -90,17 +82,20 @@ class InterfazConsola {
         println()
     }
 
-    private fun solicitarEntero(mensaje: String): Int {
-        while (true) {
-            print(mensaje)
-            val entrada = readlnOrNull()?.toIntOrNull()
-            if (entrada != null) return entrada
+    private fun pedirNum(mensaje: String): Int {
+        print(mensaje)
+        var entrada = readlnOrNull()?.toIntOrNull()
+        while (entrada==null){
             println("Introduce un número válido.")
+            print(mensaje)
+            entrada=readlnOrNull()?.toIntOrNull()
         }
+        return entrada
     }
 
-    private fun preguntarReiniciar(): Boolean {
-        print("¿Quieres jugar otra partida? (s/n): ")
-        return readlnOrNull()?.trim()?.lowercase() == "s"
+    private fun reiniciar(): Boolean {
+        print("¿Quieres echar otra? (s/n): ")
+        val respuesta=readlnOrNull()?.trim()?.lowercase()
+        return respuesta=="s"
     }
 }
