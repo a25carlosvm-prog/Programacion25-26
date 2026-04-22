@@ -1,23 +1,18 @@
 plugins {
-    kotlin("jvm") version "2.1.20"
-    id("org.jetbrains.kotlin.plugin.compose") version "2.1.20"
-    id("org.jetbrains.compose") version "1.7.3"
+    kotlin("jvm") version "1.9.24"
+    id("org.jetbrains.compose") version "1.6.11"
 }
 
 dependencies {
     implementation(compose.desktop.currentOs)
+    implementation(compose.material)
+    implementation(compose.foundation)
+    implementation(compose.runtime)
+    implementation(compose.ui)
 }
 
 compose.desktop {
     application {
         mainClass = "org.example.project.MainKt"
-
-        nativeDistributions {
-            targetFormats(
-                org.jetbrains.compose.desktop.application.dsl.TargetFormat.Exe
-            )
-            packageName = "Buscaminas"
-            packageVersion = "1.0.0"
-        }
     }
 }
